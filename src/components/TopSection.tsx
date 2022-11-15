@@ -8,7 +8,7 @@ const TopSection: FC<ITopSection> = ({
   searchContent,
 }) => {
   return (
-    <div className="flex flex-col md:flex-row md:justify-between px-5 lg:px-0">
+    <div className="flex flex-col md:flex-row md:justify-between px-5 lg:px-0 sticky top-0 bg-white py-4">
       <div className="font-bold text-xl md:text-2xl lg:text-3xl flex flex-col justify-center mb-4 lg:mb-0">
         Harga Crypto dalam Rupiah Hari Ini
       </div>

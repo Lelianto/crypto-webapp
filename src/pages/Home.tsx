@@ -264,7 +264,7 @@ const Home: React.FC = () => {
   }, [keyword]);
   return (
     <>
-      <div className="md:px-4 lg:px-8 xl:px-12 pt-4">
+      <div className="md:px-4 lg:px-8 xl:px-12 py-8">
         <TopSection
           searchContent={searchContent}
           setShowSearchResult={setShowSearchResult}

@@ -1,24 +1,71 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { ICurrencyGroup } from "../@types/market";
 import { getSupportedCurrencies, getLatestPriceChange } from "../services/apis";
+import { ImLibrary } from "react-icons/im";
+import { HiOutlineSparkles } from "react-icons/hi2";
+import { IoGameControllerOutline } from "react-icons/io5";
+import {
+  BsFileBarGraph,
+  BsArrowLeftRight,
+  BsLayersHalf,
+  BsLayersFill,
+} from "react-icons/bs";
+import { TbDatabase } from "react-icons/tb";
+import { RiMoneyDollarCircleLine, RiScales3Fill } from "react-icons/ri";
 import Table from "../components/Tables";
 import SliderMenu from "../components/Slider";
+import TopSection from "../components/TopSection";
+import { IMenu, ITableContent, ISearchContent } from "../@types/market";
 
-export interface ITableContent {
-  crypto: JSX.Element;
-  price: JSX.Element;
-  day: JSX.Element;
-  week: JSX.Element;
-  month: JSX.Element;
-  year: JSX.Element;
-}
+const menus: IMenu[] = [
+  {
+    text: "Terbaru",
+    icon: <HiOutlineSparkles className="w-6 h-6 text-blue-more" />,
+  },
+  {
+    text: "DeFi",
+    icon: <ImLibrary className="w-6 h-6 text-blue-more" />,
+  },
+  {
+    text: "NFT/Gaming",
+    icon: <IoGameControllerOutline className="w-6 h-6 text-blue-more" />,
+  },
+  {
+    text: "CEX",
+    icon: <BsFileBarGraph className="w-6 h-6 text-blue-more" />,
+  },
+  {
+    text: "DEX",
+    icon: <BsArrowLeftRight className="w-6 h-6 text-blue-more" />,
+  },
+  {
+    text: "Layer-1",
+    icon: <BsLayersHalf className="w-6 h-6 text-blue-more" />,
+  },
+  {
+    text: "Infrastructure",
+    icon: <TbDatabase className="w-6 h-6 text-blue-more" />,
+  },
+  {
+    text: "Lending",
+    icon: <RiMoneyDollarCircleLine className="w-6 h-6 text-blue-more" />,
+  },
+  {
+    text: "Layer-2",
+    icon: <BsLayersFill className="w-6 h-6 text-blue-more" />,
+  },
+  {
+    text: "Ekosistem Stablecoin",
+    icon: <RiScales3Fill className="w-6 h-6 text-blue-more" />,
+  },
+];
 
 const Home: React.FC = () => {
   const [currencyGroup, setCurrencyGroup] = useState<ICurrencyGroup[]>([]);
   const [tableContent, setTableContent] = useState<ITableContent[]>([]);
-  const [searchContent, setSearchContent] = useState<{ crypto: JSX.Element }[]>(
-    [{ crypto: <div></div> }]
-  );
+  const [searchContent, setSearchContent] = useState<ISearchContent[]>([
+    { crypto: <div></div> },
+  ]);
   const [keyword, setKeyword] = useState<string>("");
   const [showSearchResult, setShowSearchResult] = useState<boolean>(false);
   const [filter] = useState<string>("DAY");
@@ -89,7 +136,6 @@ const Home: React.FC = () => {
             ?.toLowerCase()
             .includes(keyword.toLowerCase())
         );
-        console.log(typeof keyword);
       }
       const searchPromise = response.map(async (content: ICurrencyGroup) => {
         const crypto = (
@@ -115,11 +161,11 @@ const Home: React.FC = () => {
                   }}
                 />
               </div>
-              <div className="flex flex-col lg:flex-row justify-between w-full">
+              <div className="flex flex-row justify-between w-full">
                 <div className="pl-2 flex flex-col justify-center font-bold">
                   {content.wallets?.[0]?.blockchain}
                 </div>
-                <div className="flex flex-col justify-center text-gray1">
+                <div className="flex flex-col justify-center text-gray1 pr-2 lg:pr-0">
                   {content?.currencyGroup}
                 </div>
               </div>
@@ -213,73 +259,20 @@ const Home: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currencyGroup]);
   useEffect(() => {
-    console.log({ keyword });
     getCurrencies();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [keyword]);
   return (
     <>
       <div className="md:px-4 lg:px-8 xl:px-12 pt-4">
-        <div className="flex justify-between">
-          <div>Harga Crypto dalam Rupiah Hari Ini</div>
-          <div>
-            <label
-              htmlFor="default-search"
-              className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-gray-300"
-            >
-              Search
-            </label>
-            <div className="relative">
-              <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
-                <svg
-                  aria-hidden="true"
-                  className="relative z-30 w-5 h-5 text-gray-500 dark:text-gray-400"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                  ></path>
-                </svg>
-              </div>
-              <input
-                type="search"
-                id="default-search"
-                className="block bg-slate-200 relative z-20 px-4 py-2 pl-10 w-96 text-sm text-gray-900 bg-gray-50 rounded-lg border border-slate-200 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                placeholder="Cari Crypto Berdasarkan Nama"
-                onChange={(e) => setKeyword(e.target.value)}
-                onClick={() => setShowSearchResult(true)}
-              />
-              <button
-                type="submit"
-                onClick={() => setShowSearchResult(false)}
-                className="text-black absolute z-30 right-1.5 bottom-1.5 bg-slate-200 font-medium rounded-lg text-sm px-2 py-1"
-              >
-                &#x2715;
-              </button>
-              {showSearchResult && (
-                <div className="absolute z-10 rounded-lg top-0 bg-white w-full h-96 pt-10 overflow-y-scroll shadow-lg">
-                  <div className="">
-                    {searchContent.map((content) => {
-                      return (
-                        <>
-                          <div className="cursor-pointer">{content.crypto}</div>
-                        </>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
+        <TopSection
+          searchContent={searchContent}
+          setShowSearchResult={setShowSearchResult}
+          setKeyword={setKeyword}
+          showSearchResult={showSearchResult}
+        />
         <div className="mb-4" />
-        <SliderMenu />
+        <SliderMenu menus={menus} />
         <div className="mb-4" />
         <Table headers={headers} contents={tableContent} />
       </div>

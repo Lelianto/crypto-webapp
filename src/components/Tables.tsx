@@ -1,15 +1,6 @@
 import { FC } from "react";
-import { ITableContent } from "../pages/Home";
-
-interface ITableHeader {
-  text: string;
-  style: string;
-}
-
-interface ITable {
-  headers: ITableHeader[];
-  contents: ITableContent[];
-}
+import { ITableContent } from "../@types/market";
+import { ITable } from "../@types/market";
 
 const Table: FC<ITable> = ({ headers, contents }) => {
   const headersRowStyle = "border-t border-slate-300";

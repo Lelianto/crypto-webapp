@@ -30,3 +30,40 @@ export interface IMarketContext {
 	priceList: ILatestPrice[];
 	savePriceList: (priceList: ILatestPrice[]) => void;
 }
+
+export interface IMenu {
+  text: string;
+  icon: JSX.Element;
+}
+export interface ISliderMenu {
+  menus: IMenu[];
+}
+
+export interface ITableHeader {
+  text: string;
+  style: string;
+}
+
+export interface ITable {
+  headers: ITableHeader[];
+  contents: ITableContent[];
+}
+
+export interface ITableContent {
+  crypto: JSX.Element;
+  price: JSX.Element;
+  day: JSX.Element;
+  week: JSX.Element;
+  month: JSX.Element;
+  year: JSX.Element;
+}
+
+export interface ISearchContent {
+  crypto: JSX.Element
+}
+export interface ITopSection {
+  setKeyword: (keyword: string) => void;
+  setShowSearchResult: (show: boolean) => void;
+  showSearchResult: boolean;
+  searchContent: ISearchContent[];
+}

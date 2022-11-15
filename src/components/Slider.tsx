@@ -7,7 +7,7 @@ const SliderMenu: FC<ISliderMenu> = ({ menus }) => {
       <div className="flex overflow-auto pl-2 md:pl-0">
         {menus.map((menu: IMenu) => {
           return (
-            <div className="pr-2 block">
+            <div key={`${menu.text}`} className="pr-2 block">
               <div className="flex bg-blue-light py-2 px-2 rounded-md">
                 <div className="flex flex-col justify-center">{menu.icon}</div>
                 <div className="ml-2 flex flex-col justify-center text-sm font-bold text-blue-more min-w-max">

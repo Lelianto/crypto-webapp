@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useState,
+  Suspense,
+  useContext,
+} from "react";
 import { ICurrencyGroup } from "../@types/market";
 import { getSupportedCurrencies, getLatestPriceChange } from "../services/apis";
 import { ImLibrary } from "react-icons/im";
@@ -12,10 +18,13 @@ import {
 } from "react-icons/bs";
 import { TbDatabase } from "react-icons/tb";
 import { RiMoneyDollarCircleLine, RiScales3Fill } from "react-icons/ri";
-import Table from "../components/Tables";
-import SliderMenu from "../components/Slider";
-import TopSection from "../components/TopSection";
 import { IMenu, ITableContent, ISearchContent } from "../@types/market";
+import { corsAnywhere } from "../services/constants";
+import { MarketContext } from "../context/marketContext";
+
+const Table = React.lazy(() => import("../components/Tables"));
+const TopSection = React.lazy(() => import("../components/TopSection"));
+const SliderMenu = React.lazy(() => import("../components/Slider"));
 
 const menus: IMenu[] = [
   {
@@ -61,6 +70,7 @@ const menus: IMenu[] = [
 ];
 
 const Home: React.FC = () => {
+  const context = useContext(MarketContext);
   const [currencyGroup, setCurrencyGroup] = useState<ICurrencyGroup[]>([]);
   const [tableContent, setTableContent] = useState<ITableContent[]>([]);
   const [searchContent, setSearchContent] = useState<ISearchContent[]>([
@@ -99,10 +109,11 @@ const Home: React.FC = () => {
   const getCurrencies = async () => {
     const response: ICurrencyGroup[] = (await getSupportedCurrencies()) ?? [];
     setCurrencyGroup(response);
+    context?.saveCurrencyGroup(response);
   };
   const getSvg = async (url: string) => {
     const realUrl = url.replace(/\/+$/, "");
-    return await fetch("https://shielded-hamlet-02892.herokuapp.com/" + realUrl)
+    return await fetch(`${corsAnywhere}${realUrl}`)
       .then(async (res) => await res.text())
       .then((file) => file)
       .catch((error) => console.log({ error }));
@@ -126,6 +137,9 @@ const Home: React.FC = () => {
       </>
     );
   };
+  const handlePress = (keyword: string) => {
+    setKeyword(keyword);
+  };
   const getPriceChange = useCallback(
     async (keyword?: string) => {
       let response: ICurrencyGroup[] =
@@ -142,13 +156,16 @@ const Home: React.FC = () => {
           <>
             <div
               onClick={() =>
-                setKeyword(content?.wallets?.[0]?.blockchain ?? "")
+                handlePress(content?.wallets?.[0]?.blockchain ?? "")
               }
               className="flex p-2 pr-0 md:pr-5"
             >
               <div className="flex flex-col justify-center">
                 <div
                   className="crypto-logo"
+                  onClick={() =>
+                    handlePress(content?.wallets?.[0]?.blockchain ?? "")
+                  }
                   dangerouslySetInnerHTML={{
                     __html:
                       (
@@ -161,7 +178,12 @@ const Home: React.FC = () => {
                   }}
                 />
               </div>
-              <div className="flex flex-row justify-between w-full">
+              <div
+                onClick={() =>
+                  handlePress(content?.wallets?.[0]?.blockchain ?? "")
+                }
+                className="flex flex-row justify-between w-full"
+              >
                 <div className="pl-2 flex flex-col justify-center font-bold">
                   {content.wallets?.[0]?.blockchain}
                 </div>
@@ -242,9 +264,10 @@ const Home: React.FC = () => {
       const tableContent: ITableContent[] = await Promise.all(promises);
       setTableContent(tableContent);
       setCurrencyGroup(response);
-      // setTimeout(() => {
-      // 	getPriceChange()
-      // }, 10000)
+      context?.saveCurrencyGroup(response);
+      setTimeout(() => {
+        getPriceChange(keyword);
+      }, 10000);
     },
     [currencyGroup, filter]
   );
@@ -264,18 +287,22 @@ const Home: React.FC = () => {
   }, [keyword]);
   return (
     <>
-      <div className="md:px-4 lg:px-8 xl:px-12 py-8">
-        <TopSection
-          searchContent={searchContent}
-          setShowSearchResult={setShowSearchResult}
-          setKeyword={setKeyword}
-          showSearchResult={showSearchResult}
-        />
-        <div className="mb-4" />
-        <SliderMenu menus={menus} />
-        <div className="mb-4" />
-        <Table headers={headers} contents={tableContent} />
-      </div>
+      <Suspense fallback={<div>Loading...</div>}>
+        <section>
+          <div className="md:px-4 lg:px-8 xl:px-12 py-8">
+            <TopSection
+              searchContent={searchContent}
+              setShowSearchResult={setShowSearchResult}
+              setKeyword={setKeyword}
+              showSearchResult={showSearchResult}
+            />
+            <div className="mb-4" />
+            <SliderMenu menus={menus} />
+            <div className="mb-4" />
+            <Table headers={headers} contents={tableContent} />
+          </div>
+        </section>
+      </Suspense>
     </>
   );
 };

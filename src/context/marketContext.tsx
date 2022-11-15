@@ -1,19 +1,23 @@
 /* eslint-disable array-callback-return */
-import * as React from 'react';
-import { IMarketContext, ILatestPrice } from '../@types/market';
+import { FC, useState, ReactNode, createContext } from "react";
+import { IMarketContext, ICurrencyGroup } from "../@types/market";
 
-export const MarketContext = React.createContext<IMarketContext | null>(null);
+export const MarketContext = createContext<IMarketContext | null>(null);
 
 interface Props {
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
-const MarketProvider: React.FC<Props> = ({ children }) => {
-  const [priceList, setPriceList] = React.useState<ILatestPrice[]>([]);
-  const savePriceList = (priceList: ILatestPrice[]) => {
-		setPriceList(priceList);
-	};
-  return <MarketContext.Provider value={{ priceList, savePriceList }}>{children}</MarketContext.Provider>;
+const MarketProvider: FC<Props> = ({ children }) => {
+  const [currencyGroup, setCurrencyGroup] = useState<ICurrencyGroup[]>([]);
+  const saveCurrencyGroup = (currencyGroup: ICurrencyGroup[]) => {
+    setCurrencyGroup(currencyGroup);
+  };
+  return (
+    <MarketContext.Provider value={{ currencyGroup, saveCurrencyGroup }}>
+      {children}
+    </MarketContext.Provider>
+  );
 };
 
 export default MarketProvider;

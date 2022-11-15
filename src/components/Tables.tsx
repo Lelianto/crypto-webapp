@@ -12,6 +12,7 @@ const Table: FC<ITable> = ({ headers, contents }) => {
             <tr>
               {headers.map((header, index) => (
                 <td
+                  key={`header-${index}`}
                   className={[
                     header.style,
                     `${index > 1 && "hidden md:table-cell"}`,
@@ -41,11 +42,12 @@ const Table: FC<ITable> = ({ headers, contents }) => {
             </tr>
           </thead>
           <tbody>
-            {contents.map((content: ITableContent) => {
+            {contents.map((content: ITableContent, id) => {
               return (
-                <tr className={headersRowStyle}>
+                <tr key={`content-${id}`} className={headersRowStyle}>
                   {Object.keys(content).map((key, index) => (
                     <td
+                      key={`column-content-${index}`}
                       className={`${
                         index > 1 ? "hidden md:table-cell" : "w-1/2 md:w-auto"
                       }`}

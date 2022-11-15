@@ -22,7 +22,7 @@ const TopSection: FC<ITopSection> = ({
         <div className="relative">
           <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
             <svg
-              aria-hidden="true"
+              aria-hidden={true}
               className="relative z-30 w-5 h-5 text-gray-500 dark:text-gray-400"
               fill="none"
               stroke="currentColor"

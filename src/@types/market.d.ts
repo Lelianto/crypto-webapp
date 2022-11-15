@@ -27,8 +27,8 @@ export interface ICurrencyGroup extends ICurrency, ILatestPrice {
   wallets?: IWallet[];
 }
 export interface IMarketContext {
-	priceList: ILatestPrice[];
-	savePriceList: (priceList: ILatestPrice[]) => void;
+	currencyGroup: ICurrencyGroup[];
+	saveCurrencyGroup: (currencyGroup: ICurrencyGroup[]) => void;
 }
 
 export interface IMenu {

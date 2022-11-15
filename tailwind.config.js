@@ -20,7 +20,9 @@ module.exports = {
       colors: () => ({
         'gray1': '#979797',
         'up': 'rgb(28, 203, 33)',
-        'down': 'rgb(255, 90, 90)'
+        'down': 'rgb(255, 90, 90)',
+        'blue-light': '#DBEAFE',
+        'blue-more': '#0A50E2'
       })
     },
   },
